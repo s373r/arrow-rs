@@ -336,7 +336,7 @@ impl Config {
             .pop_if_empty()
             .extend(location.parts());
 
-        dbg!(&url);
+        dbg!(format!("{}", url.to_string()));
 
         let res = url.to_file_path()
             .map_err(|_| Error::InvalidUrl { url }.into());
