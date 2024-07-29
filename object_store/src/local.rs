@@ -326,6 +326,9 @@ impl Config {
     /// Return an absolute filesystem path of the given location
     fn prefix_to_filesystem(&self, location: &Path) -> Result<PathBuf> {
         let mut url = self.root.clone();
+
+        dbg!(&url);
+
         url.path_segments_mut()
             .expect("url path")
             // technically not necessary as Path ignores empty segments
@@ -333,8 +336,14 @@ impl Config {
             .pop_if_empty()
             .extend(location.parts());
 
-        url.to_file_path()
-            .map_err(|_| Error::InvalidUrl { url }.into())
+        dbg!(&url);
+
+        let res = url.to_file_path()
+            .map_err(|_| Error::InvalidUrl { url }.into());
+
+        dbg!(&res);
+
+        res
     }
 
     /// Resolves the provided absolute filesystem path to a [`Path`] prefix
@@ -526,6 +535,8 @@ impl ObjectStore for LocalFileSystem {
 
     fn list(&self, prefix: Option<&Path>) -> BoxStream<'_, Result<ObjectMeta>> {
         let config = Arc::clone(&self.config);
+
+        dbg!(prefix);
 
         let root_path = match prefix {
             Some(prefix) => match config.prefix_to_filesystem(prefix) {
